@@ -134,7 +134,7 @@ class Base(object):
             return self.feature_selection(data, labels, weights,
                                           num_features, n_method)
 
-    def explain_instance_with_data(self,
+    def explain_instance_with_data_old(self,
                                    neighborhood_data,
                                    neighborhood_labels,
                                    distances,
@@ -185,6 +185,49 @@ class Base(object):
                                                weights,
                                                num_features,
                                                feature_selection)
+        
+
+
+        if model_regressor is None:
+            model_regressor = Ridge(alpha=1, fit_intercept=True,
+                                    random_state=self.random_state)
+        easy_model = model_regressor
+        easy_model.fit(neighborhood_data[:, used_features],
+                       labels_column, sample_weight=weights)
+        prediction_score = easy_model.score(
+            neighborhood_data[:, used_features],
+            labels_column, sample_weight=weights)
+
+        local_pred = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
+
+        if self.verbose:
+            print('Intercept', easy_model.intercept_)
+            print('Prediction_local', local_pred,)
+            print('Right:', neighborhood_labels[0, label])
+        return (easy_model.intercept_,
+                sorted(zip(used_features, easy_model.coef_),
+                       key=lambda x: np.abs(x[1]), reverse=True),
+                prediction_score, local_pred)
+    
+    def explain_instance_with_data(self,
+                                   neighborhood_data,
+                                   neighborhood_labels,
+                                   distances,
+                                   label,
+                                   num_features,
+                                   feature_selection='auto',
+                                   model_regressor=None):
+        asd=123
+        weights = self.kernel_fn(distances)
+        labels_column = neighborhood_labels[:, label]
+        used_features = self.feature_selection(neighborhood_data,
+                                               labels_column,
+                                               weights,
+                                               num_features,
+                                               feature_selection)
+        
+
+        
         if model_regressor is None:
             model_regressor = Ridge(alpha=1, fit_intercept=True,
                                     random_state=self.random_state)
