@@ -27,9 +27,10 @@ from lime.discretize import DecileDiscretizer
 from lime.discretize import EntropyDiscretizer
 from lime.discretize import BaseDiscretizer
 from lime.discretize import StatsDiscretizer
-from lime import lime_base
+#from lime import lime_base
+from Base import Base
 
-class MyExplainer:
+class TabularExplainer:
     def __init__(self, training_data, feature_names, class_names,mode='classification',
                  random_state=None,discretizer='quartile',training_data_stats=None,
                  sample_around_instance=False,categorical_features=None,
@@ -103,7 +104,7 @@ class MyExplainer:
         kernel_fn = partial(kernel, kernel_width=kernel_width)
 
         self.feature_selection = feature_selection
-        self.base = lime_base.LimeBase(kernel_fn, verbose, random_state=self.random_state)
+        self.base = Base(kernel_fn, verbose, random_state=self.random_state)
         self.class_names = class_names
 
         # Though set has no role to play if training data stats are provided

@@ -49,13 +49,23 @@ instance = X_test.iloc[i]
 
 
 asd=123
-from MyExplainer import MyExplainer
-explainer = MyExplainer(np.array(X_train),feature_names,class_names=['malignant', 'benign'],mode='classification',
+from toanstt.TabularExplainer import TabularExplainer
+explainer = TabularExplainer(np.array(X_train),feature_names,class_names=['malignant', 'benign'],mode='classification',
                         training_labels=None)
 
+i = 25  # Index of the instance in the test set
+instance = X_test.iloc[i]
+
+# Generate explanation for the instance
 exp = explainer.explain_instance(
     data_row=instance,
     predict_fn=rf.predict_proba
 )
 
+print('Prediction probability:', rf.predict_proba([instance])[0])
+print('True class:', y_test.iloc[i])
+print('Explanation:', exp.as_list())
+
+fig = exp.as_pyplot_figure()
+plt.show()
 asd=123
