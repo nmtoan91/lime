@@ -248,3 +248,54 @@ class Base(object):
                 sorted(zip(used_features, easy_model.coef_),
                        key=lambda x: np.abs(x[1]), reverse=True),
                 prediction_score, local_pred)
+    
+    def ERGetConflictDegree_All(self,input1,input2):
+        num_N = input1.shape[0]
+        mnI = input1
+        mnI_tmp = input2
+        K=0
+        for j in range(num_N):
+            for j2 in range(num_N):
+                if j !=j2:
+                    K+= mnI[j]*mnI_tmp[j2]
+        K = 1/(1-K)
+        if K ==0: k = 10e-10
+        return K
+    def ERGetConflictDegree(self,input1,input2,label=0):
+        num_N = input1.shape[0]
+        mnI = input1
+        mnI_tmp = input2
+        K = 0
+        K=0
+        for j in range(num_N):
+            if j != label: continue
+            K+= mnI[label]*mnI_tmp[j]
+            K+= mnI[j]*mnI_tmp[label]
+        K = 1/(1-K)
+
+        K /= self.ERGetConflictDegree_All(input1,input2)
+        return K
+    
+
+if __name__ == '__main__':
+    input = np.array([[0.00225496, 0.03521706, 0.20233626, 0.4276612 , 0.33253052,        0.        ],   
+                  [0.00225496, 0.03521706, 0.20233626, 0.4276612 , 0.33253052,        0.        ],
+                      [0.00189079, 0.03127181, 0.19026937, 0.425883  , 0.35068504,        0.        ],  
+                                [0.00127652, 0.02393234, 0.16506216, 0.41880832, 0.39092065,        0.        ],   
+                                        [0.41825136, 0.0235429 , 0.16360476,  0.39335466, 0.00124632,       0.        ]])
+    def kernel(d, kernel_width):
+                return np.sqrt(np.exp(-(d ** 2) / kernel_width ** 2))
+    a = Base(kernel)
+    K = a.ERGetConflictDegree(input[0],input[1],0)
+    print(K)
+
+    K = a.ERGetConflictDegree(input[0],input[4],0)
+    print(K)
+
+    K = a.ERGetConflictDegree(input[0],input[1],1)
+    print(K)
+
+    K = a.ERGetConflictDegree(input[0],input[4],1)
+    print(K)
+
+
