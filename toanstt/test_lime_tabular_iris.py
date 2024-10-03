@@ -11,20 +11,19 @@ sys.path.insert(0, parentdir+'/lime')
 import numpy as np
 import pandas as pd
 
+
 from sklearn.datasets import load_iris
-from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-#import lime
-#import lime.lime_tabular
+import lime
+import lime.lime_tabular
 
 
-#data = load_breast_cancer()
 data = load_iris()
 X = data.data
 y = data.target
-label =1
+label =2
 feature_names = data.feature_names
 
 df = pd.DataFrame(X, columns=feature_names)
@@ -37,23 +36,28 @@ X_train, X_test, y_train, y_test = train_test_split(
 rf = RandomForestClassifier(n_estimators=100, random_state=42)
 rf.fit(X_train, y_train)
 
-i = 25  # Index of the instance in the test set
-instance = X_test.iloc[i]
-
-
-from toanstt.TabularExplainer import TabularExplainer
-explainer = TabularExplainer(np.array(X_train),feature_names,class_names=feature_names,mode='classification',
-                        training_labels=None)
+# Create a LIME explainer
+explainer = lime.lime_tabular.LimeTabularExplainer(
+    training_data=np.array(X_train),
+    feature_names=feature_names,
+    class_names=data.target_names,
+    mode='classification'
+)
 
 i = 25  # Index of the instance in the test set
 instance = X_test.iloc[i]
 
 # Generate explanation for the instance
 exp = explainer.explain_instance(
+    labels=(label,),
     data_row=instance,
-    predict_fn=rf.predict_proba, labels=(label,)
+    predict_fn=rf.predict_proba
 )
 
+# Display the explanation
+
+
+# Or print the explanation in text format
 print('Prediction probability:', rf.predict_proba([instance])[0])
 print('True class:', y_test.iloc[i])
 print('Explanation:', exp.as_list(label=label))
@@ -61,4 +65,3 @@ print('Explanation:', exp.as_list(label=label))
 fig = exp.as_pyplot_figure(label=label)
 plt.show()
 asd=123
-

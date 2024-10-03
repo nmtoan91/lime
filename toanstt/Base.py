@@ -209,16 +209,17 @@ class Base(object):
                        key=lambda x: np.abs(x[1]), reverse=True),
                 prediction_score, local_pred)
     
-    def explain_instance_with_data(self,
+    def explain_instance_with_data_original_lime(self,
                                    neighborhood_data,
                                    neighborhood_labels,
                                    distances,
                                    label,
                                    num_features,
                                    feature_selection='auto',
-                                   model_regressor=None):
-        asd=123
+                                   model_regressor=None,alpha = 0.1 ):
+ 
         weights = self.kernel_fn(distances)
+
         labels_column = neighborhood_labels[:, label]
         used_features = self.feature_selection(neighborhood_data,
                                                labels_column,
@@ -226,7 +227,55 @@ class Base(object):
                                                num_features,
                                                feature_selection)
         
+        if model_regressor is None:
+            model_regressor = Ridge(alpha=1, fit_intercept=True,
+                                    random_state=self.random_state)
+        easy_model = model_regressor
+        easy_model.fit(neighborhood_data[:, used_features],
+                       labels_column, sample_weight=weights)
+        prediction_score = easy_model.score(
+            neighborhood_data[:, used_features],
+            labels_column, sample_weight=weights)
 
+        local_pred = easy_model.predict(neighborhood_data[0, used_features].reshape(1, -1))
+
+        if self.verbose:
+            print('Intercept', easy_model.intercept_)
+            print('Prediction_local', local_pred,)
+            print('Right:', neighborhood_labels[0, label])
+        return (easy_model.intercept_,
+                sorted(zip(used_features, easy_model.coef_),
+                       key=lambda x: np.abs(x[1]), reverse=True),
+                prediction_score, local_pred)
+
+
+
+    def explain_instance_with_data(self,
+                                   neighborhood_data,
+                                   neighborhood_labels,
+                                   distances,
+                                   label,
+                                   num_features,
+                                   feature_selection='auto',
+                                   model_regressor=None,alpha = 0.1 ):
+ 
+        weights = self.kernel_fn(distances)
+
+        #Applying conflict analysis
+
+        asd=123
+        my_row = neighborhood_labels[0]
+        for i in range(len(neighborhood_labels)):
+            neighborhood_labels[i,label] = self.ERGetWeightedConflictDegree_Diff(my_row,neighborhood_labels[i],label,alpha  )
+
+        #EndApplying conflict analysis
+
+        labels_column = neighborhood_labels[:, label]
+        used_features = self.feature_selection(neighborhood_data,
+                                               labels_column,
+                                               weights,
+                                               num_features,
+                                               feature_selection)
         
         if model_regressor is None:
             model_regressor = Ridge(alpha=1, fit_intercept=True,
@@ -258,10 +307,12 @@ class Base(object):
             for j2 in range(num_N):
                 if j !=j2:
                     K+= mnI[j]*mnI_tmp[j2]
+        if K == 1: K = 1 - 10e-10
         K = 1/(1-K)
-        if K ==0: k = 10e-10
+        if K ==0: K = 10e-10
         return K
-    def ERGetConflictDegree(self,input1,input2,label=0):
+    
+    def ERGetConflictDegree_Same(self,input1,input2,label=0):
         num_N = input1.shape[0]
         mnI = input1
         mnI_tmp = input2
@@ -276,6 +327,20 @@ class Base(object):
         K /= self.ERGetConflictDegree_All(input1,input2)
         return K
     
+    def ERGetConflictDegree_Diff(self,input1,input2,label=0):
+        if type(input1) is list: input1 = np.array(input1)
+        if type(input2) is list: input2 = np.array(input2)
+
+        K = self.ERGetConflictDegree_Same(input1,input2,label)
+        KAll = self.ERGetConflictDegree_All(input1,input2)
+        
+        if KAll ==0:  KAll = 10e-10
+        if KAll==np.inf: KAll = 10e10
+        return (KAll-K)/KAll
+    
+    def ERGetWeightedConflictDegree_Diff(self,input1,input2,label=0,alpha=0.1):
+        return abs(input1[label] - input2[label])*(1-alpha) + (alpha)* self.ERGetConflictDegree_Diff(input1,input2,label)
+    
 
 if __name__ == '__main__':
     input = np.array([[0.00225496, 0.03521706, 0.20233626, 0.4276612 , 0.33253052,        0.        ],   
@@ -285,17 +350,25 @@ if __name__ == '__main__':
                                         [0.41825136, 0.0235429 , 0.16360476,  0.39335466, 0.00124632,       0.        ]])
     def kernel(d, kernel_width):
                 return np.sqrt(np.exp(-(d ** 2) / kernel_width ** 2))
+    
     a = Base(kernel)
-    K = a.ERGetConflictDegree(input[0],input[1],0)
+    # K = a.ERGetConflictDegree_Diff(input[0],input[1],0)
+    # print(K)
+
+    # K = a.ERGetConflictDegree_Diff(input[0],input[4],0)
+    # print(K)
+
+    # K = a.ERGetConflictDegree_Diff(input[0],input[1],1)
+    # print(K)
+
+    # K = a.ERGetConflictDegree_Diff(input[0],input[4],1)
+    # print(K)
+
+    K = a.ERGetConflictDegree_Diff([0.5,0.25,0],[0.5,0.25,0.25])
     print(K)
 
-    K = a.ERGetConflictDegree(input[0],input[4],0)
+    K = a.ERGetConflictDegree_Diff([0.5,0.5,0],[0.5,0,0.5])
     print(K)
 
-    K = a.ERGetConflictDegree(input[0],input[1],1)
-    print(K)
-
-    K = a.ERGetConflictDegree(input[0],input[4],1)
-    print(K)
 
 

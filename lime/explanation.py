@@ -97,6 +97,14 @@ class Explanation(object):
         self.intercept = {}
         self.score = {}
         self.local_pred = {}
+
+        #nmtoan91
+        self.local_exp_conflict = {}
+        self.intercept_conflict = {}
+        self.score_conflict = {}
+        self.local_pred_conflict = {}
+
+
         if mode == 'classification':
             self.class_names = class_names
             self.top_labels = None
@@ -173,13 +181,27 @@ class Explanation(object):
         names.reverse()
         colors = ['green' if x > 0 else 'red' for x in vals]
         pos = np.arange(len(exp)) + .5
-        plt.barh(pos, vals, align='center', color=colors)
+        bars = plt.barh(pos, vals, align='center', color=colors)
         plt.yticks(pos, names)
         if self.mode == "classification":
             title = 'Local explanation for class %s' % self.class_names[label]
         else:
             title = 'Local explanation'
-        plt.title(title)
+        
+        plt.title(title,loc='right')
+
+        asd=123
+        if label in self.local_exp_conflict:
+            conflicts = [i[1] for i in self.local_exp_conflict[label]]
+            conflicts.reverse()
+            for i in range(len(bars)):
+                bar = bars[i]
+                conflict_val = conflicts[i]
+                plt.text(0.01, bar.get_y() + bar.get_height()/2, f'cf cof: {conflict_val:.2f}', va='center', ha='right', color='black',
+                         #bbox=dict(facecolor='darkgreen' if conflict_val>=0 else "grey", edgecolor='none', boxstyle='round,pad=0.3'))
+                         bbox=dict(facecolor="lightgreen", edgecolor='none', boxstyle='round,pad=0.3'))
+        asd=123
+        plt.tight_layout()
         return fig
 
     def show_in_notebook(self,

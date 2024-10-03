@@ -261,7 +261,32 @@ class TabularExplainer:
                     num_features,
                     model_regressor=model_regressor,
                     feature_selection=self.feature_selection)
+            
             asd=123
+            #nmtoan: convert labels to conflect degrees
+            my_row = yss[0]
+            for i in range(len(yss)):
+                yss[i,label] = self.base.ERGetConflictDegree_Diff(my_row,yss[i],label  )
+
+
+            (ret_exp.intercept_conflict[label],
+             ret_exp.local_exp_conflict[label],
+             ret_exp.score_conflict[label],
+             ret_exp.local_pred_conflict[label]) = self.base.explain_instance_with_data_original_lime(
+                    scaled_data,
+                    yss,
+                    distances,
+                    label,
+                    num_features,
+                    model_regressor=model_regressor,
+                    feature_selection=self.feature_selection)
+
+
+            
+            
+            asd=123
+
+            
 
         if self.mode == "regression":
             ret_exp.intercept[1] = ret_exp.intercept[0]

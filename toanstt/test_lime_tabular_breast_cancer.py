@@ -23,6 +23,7 @@ import lime.lime_tabular
 data = load_breast_cancer()
 X = data.data
 y = data.target
+label =1
 feature_names = data.feature_names
 
 df = pd.DataFrame(X, columns=feature_names)
@@ -49,7 +50,8 @@ instance = X_test.iloc[i]
 # Generate explanation for the instance
 exp = explainer.explain_instance(
     data_row=instance,
-    predict_fn=rf.predict_proba
+    predict_fn=rf.predict_proba,
+    labels=(label,),
 )
 
 # Display the explanation
@@ -58,8 +60,8 @@ exp = explainer.explain_instance(
 # Or print the explanation in text format
 print('Prediction probability:', rf.predict_proba([instance])[0])
 print('True class:', y_test.iloc[i])
-print('Explanation:', exp.as_list())
+print('Explanation:', exp.as_list(label=label))
 
-fig = exp.as_pyplot_figure()
+fig = exp.as_pyplot_figure(label=label)
 plt.show()
 asd=123
