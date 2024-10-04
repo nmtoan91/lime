@@ -136,7 +136,7 @@ class TabularExplainer:
     def explain_instance(self, data_row,predict_fn,num_samples=5000,
                          sampling_method='gaussian',distance_metric='euclidean',
                          num_features=10,feature_selection='auto',
-                         top_labels=None,model_regressor=None,labels=(1,)):
+                         top_labels=None,model_regressor=None,labels=(1,),alpha=0.1):
         if sp.sparse.issparse(data_row) and not sp.sparse.isspmatrix_csr(data_row):
             # Preventative code: if sparse, convert to csr format if not in csr format already
             data_row = data_row.tocsr()
@@ -260,7 +260,7 @@ class TabularExplainer:
                     label,
                     num_features,
                     model_regressor=model_regressor,
-                    feature_selection=self.feature_selection)
+                    feature_selection=self.feature_selection,alpha=alpha)
             
             asd=123
             #nmtoan: convert labels to conflect degrees

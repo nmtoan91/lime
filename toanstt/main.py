@@ -16,16 +16,24 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import argparse
-
+import lime
+import lime.lime_tabular
 from MTools import LoadDataSet, SelectClassifier
 
-
+dirname = os.path.dirname(__file__)
+basename =os.path.basename(__file__)
+asd=123
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
     parser.add_argument("-i", "--index",type=int,  default=0, help='index')
     parser.add_argument("-l", "--label",type=int,  default=None, help='index')
     parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
+    parser.add_argument("-a", "--alpha",type=float,  default=0.1, help='alpha')
+    #parser.add_argument("-e", "--explainer",type=str,  default='dst-lime', help='alpha')
+    parser.add_argument("-e", "--explainer",type=str,  default='lime', help='alpha')
+    parser.add_argument("-nf", "--num_features",type=int,  default=10, help='num_features')
+
 
     args = parser.parse_args()
 
@@ -50,24 +58,42 @@ if __name__ == '__main__':
     if args.label == None: args.label = classifier.predict([instance])[0]
     
 
-    from toanstt.TabularExplainer import TabularExplainer
-    explainer = TabularExplainer(np.array(X_train),feature_names,class_names=feature_names,mode='classification',
-                            training_labels=None)
 
-    
+    if args.explainer == 'dst-lime':
+        from toanstt.TabularExplainer import TabularExplainer
+        explainer = TabularExplainer(np.array(X_train),feature_names,class_names=feature_names,
+                                     mode='classification',
+                                training_labels=None)
+        exp = explainer.explain_instance(
+            data_row=instance,
+            predict_fn=classifier.predict_proba, labels=(args.label,),
+            alpha = args.alpha, num_features = args.num_features
+        )
 
-    # Generate explanation for the instance
-    exp = explainer.explain_instance(
-        data_row=instance,
-        predict_fn=classifier.predict_proba, labels=(args.label,)
-    )
+    elif args.explainer == 'lime':
+        explainer = lime.lime_tabular.LimeTabularExplainer(
+            training_data=np.array(X_train),
+            feature_names=feature_names,
+            class_names=feature_names,
+            mode='classification',
+            training_labels=None)
+
+        exp = explainer.explain_instance(
+            data_row=instance,
+            predict_fn=classifier.predict_proba,
+            labels=(args.label,), num_features = args.num_features)
 
     print('Prediction probability:', classifier.predict_proba([instance])[0])
     print('True class:', y_test.iloc[args.index])
     print('Explanation:', exp.as_list(label=args.label))
 
     fig = exp.as_pyplot_figure(label=args.label)
+
+    outputName = f"{args.explainer}_{args.method}_{args.data}_i{args.index}_l{args.label}_a{args.alpha}"
+
+    fig.savefig(dirname+"/Figures/" + outputName + ".pdf")
+
     plt.show()
-    input()
-    asd=123
+    #input()
+    #asd=123
 

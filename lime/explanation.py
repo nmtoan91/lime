@@ -184,6 +184,8 @@ class Explanation(object):
         my_n = len(self.local_exp[label])
         for i in range(my_n):
             my_bars_indexes.append(self.local_exp[label][my_n-1-i][0])
+        
+
         asd=123
 
 
@@ -200,13 +202,20 @@ class Explanation(object):
 
         asd=123
         if label in self.local_exp_conflict:
+            conflicts_byId = {}
+            for (fid,conflict_value) in self.local_exp_conflict[label]:
+                conflicts_byId[fid] = conflict_value
+
             conflicts = [i[1] for i in self.local_exp_conflict[label]]
             conflicts_real_index = [i[0] for i in self.local_exp_conflict[label]]
             for i in range(len(bars)):
                 #bar = bars[my_bars_indexes[conflicts_real_index[i]]]
-                bar = bars[i]
+                
 
-                conflict_val = conflicts[conflicts_real_index[i]]
+                bar = bars[i]
+                fid = my_bars_indexes[i]
+
+                conflict_val = conflicts_byId[fid]
                 plt.text(0.01, bar.get_y() + bar.get_height()/2, f'cf={abs(conflict_val):.2f}', va='center', ha='center', color='black',
                          #bbox=dict(facecolor='darkgreen' if conflict_val>=0 else "grey", edgecolor='none', boxstyle='round,pad=0.3'))
                          bbox=dict(facecolor="lightgreen", edgecolor='none', boxstyle='round,pad=0.01',alpha=0.5)
