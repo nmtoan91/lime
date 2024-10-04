@@ -205,13 +205,7 @@ class Explanation(object):
             conflicts_byId = {}
             for (fid,conflict_value) in self.local_exp_conflict[label]:
                 conflicts_byId[fid] = conflict_value
-
-            conflicts = [i[1] for i in self.local_exp_conflict[label]]
-            conflicts_real_index = [i[0] for i in self.local_exp_conflict[label]]
             for i in range(len(bars)):
-                #bar = bars[my_bars_indexes[conflicts_real_index[i]]]
-                
-
                 bar = bars[i]
                 fid = my_bars_indexes[i]
 

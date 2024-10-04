@@ -18,7 +18,9 @@ from sklearn.ensemble import RandomForestClassifier
 import argparse
 import lime
 import lime.lime_tabular
-from MTools import LoadDataSet, SelectClassifier
+import json
+
+from MTools import LoadDataSet, SelectClassifier,ExtractExplnationData
 
 dirname = os.path.dirname(__file__)
 basename =os.path.basename(__file__)
@@ -26,7 +28,9 @@ asd=123
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
-    parser.add_argument("-i", "--index",type=int,  default=0, help='index')
+    #parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
+    
+    parser.add_argument("-i", "--index",type=int,  default=3, help='index')
     parser.add_argument("-l", "--label",type=int,  default=None, help='index')
     parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
     parser.add_argument("-a", "--alpha",type=float,  default=0.1, help='alpha')
@@ -55,8 +59,11 @@ if __name__ == '__main__':
 
     
     instance = X_test.iloc[args.index]
-    if args.label == None: args.label = classifier.predict([instance])[0]
-    
+    if args.label == None:
+        #args.label = classifier.predict([instance])[0]
+        args.label = np.argmax(classifier.predict_proba([instance])[0])
+        asd=123
+    asd=123
 
 
     if args.explainer == 'dst-lime':
@@ -92,7 +99,7 @@ if __name__ == '__main__':
     outputName = f"{args.explainer}_{args.method}_{args.data}_i{args.index}_l{args.label}_a{args.alpha}"
 
     fig.savefig(dirname+"/Figures/" + outputName + ".pdf")
-
+    results = ExtractExplnationData(exp)
     plt.show()
     #input()
     #asd=123

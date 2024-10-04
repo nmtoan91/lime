@@ -33,3 +33,13 @@ def SelectClassifier(classifierName):
     if classifierName == 'DecisionTreeClassifier':
         return DecisionTreeClassifier()
     print('Cannot find any dataset with name', classifierName)
+
+def ExtractExplnationData(exp):
+    data={}
+    data['score'] = exp.score
+    data['local_exp'] = exp.local_exp
+    data['local_exp_conflict'] = exp.local_exp_conflict
+    data['predict_proba'] = exp.predict_proba
+
+
+    return data
