@@ -60,5 +60,6 @@ print('Explanation:', exp.as_list(label=label))
 
 fig = exp.as_pyplot_figure(label=label)
 plt.show()
+input()
 asd=123
 

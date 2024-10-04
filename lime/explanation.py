@@ -179,6 +179,14 @@ class Explanation(object):
         names = [x[0] for x in exp]
         vals.reverse()
         names.reverse()
+        #nmtoan
+        my_bars_indexes = []
+        my_n = len(self.local_exp[label])
+        for i in range(my_n):
+            my_bars_indexes.append(self.local_exp[label][my_n-1-i][0])
+        asd=123
+
+
         colors = ['green' if x > 0 else 'red' for x in vals]
         pos = np.arange(len(exp)) + .5
         bars = plt.barh(pos, vals, align='center', color=colors)
@@ -193,11 +201,11 @@ class Explanation(object):
         asd=123
         if label in self.local_exp_conflict:
             conflicts = [i[1] for i in self.local_exp_conflict[label]]
-            conflicts.reverse()
+            conflicts_real_index = [i[0] for i in self.local_exp_conflict[label]]
             for i in range(len(bars)):
-                bar = bars[i]
+                bar = bars[my_bars_indexes[conflicts_real_index[i]]]
                 conflict_val = conflicts[i]
-                plt.text(0.01, bar.get_y() + bar.get_height()/2, f'cf cof: {conflict_val:.2f}', va='center', ha='right', color='black',
+                plt.text(0.01, bar.get_y() + bar.get_height()/2, f'cf cof: {abs(conflict_val):.2f}', va='center', ha='right', color='black',
                          #bbox=dict(facecolor='darkgreen' if conflict_val>=0 else "grey", edgecolor='none', boxstyle='round,pad=0.3'))
                          bbox=dict(facecolor="lightgreen", edgecolor='none', boxstyle='round,pad=0.3'))
         asd=123
