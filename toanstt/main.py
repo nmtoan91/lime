@@ -15,51 +15,59 @@ from sklearn.datasets import load_iris
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+import argparse
 
-#import lime
-#import lime.lime_tabular
-
-
-#data = load_breast_cancer()
-data = load_iris()
-X = data.data
-y = data.target
-label =1
-feature_names = data.feature_names
-
-df = pd.DataFrame(X, columns=feature_names)
-df['target'] = y
-
-X_train, X_test, y_train, y_test = train_test_split(
-    df[feature_names], df['target'], test_size=0.2, random_state=42)
-
-# Train a Random Forest classifier
-rf = RandomForestClassifier(n_estimators=100, random_state=42)
-rf.fit(X_train, y_train)
-
-i = 25  # Index of the instance in the test set
-instance = X_test.iloc[i]
+from MTools import LoadDataSet, SelectClassifier
 
 
-from toanstt.TabularExplainer import TabularExplainer
-explainer = TabularExplainer(np.array(X_train),feature_names,class_names=feature_names,mode='classification',
-                        training_labels=None)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
+    parser.add_argument("-i", "--index",type=int,  default=0, help='index')
+    parser.add_argument("-l", "--label",type=int,  default=None, help='index')
+    parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
 
-i = 25  # Index of the instance in the test set
-instance = X_test.iloc[i]
+    args = parser.parse_args()
 
-# Generate explanation for the instance
-exp = explainer.explain_instance(
-    data_row=instance,
-    predict_fn=rf.predict_proba, labels=(label,)
-)
+    data = LoadDataSet(args.data)
+    X = data.data
+    y = data.target
+    
+    feature_names = data.feature_names
 
-print('Prediction probability:', rf.predict_proba([instance])[0])
-print('True class:', y_test.iloc[i])
-print('Explanation:', exp.as_list(label=label))
+    df = pd.DataFrame(X, columns=feature_names)
+    df['target'] = y
 
-fig = exp.as_pyplot_figure(label=label)
-plt.show()
-input()
-asd=123
+    X_train, X_test, y_train, y_test = train_test_split(
+        df[feature_names], df['target'], test_size=0.2, random_state=42)
+
+    # Train a Random Forest classifier
+    classifier = SelectClassifier(args.method)
+    classifier.fit(X_train, y_train)
+
+    
+    instance = X_test.iloc[args.index]
+    if args.label == None: args.label = classifier.predict([instance])[0]
+    
+
+    from toanstt.TabularExplainer import TabularExplainer
+    explainer = TabularExplainer(np.array(X_train),feature_names,class_names=feature_names,mode='classification',
+                            training_labels=None)
+
+    
+
+    # Generate explanation for the instance
+    exp = explainer.explain_instance(
+        data_row=instance,
+        predict_fn=classifier.predict_proba, labels=(args.label,)
+    )
+
+    print('Prediction probability:', classifier.predict_proba([instance])[0])
+    print('True class:', y_test.iloc[args.index])
+    print('Explanation:', exp.as_list(label=args.label))
+
+    fig = exp.as_pyplot_figure(label=args.label)
+    plt.show()
+    input()
+    asd=123
 

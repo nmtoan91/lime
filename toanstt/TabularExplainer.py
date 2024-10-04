@@ -269,6 +269,7 @@ class TabularExplainer:
                 yss[i,label] = self.base.ERGetConflictDegree_Diff(my_row,yss[i],label  )
 
 
+            asd=123
             (ret_exp.intercept_conflict[label],
              ret_exp.local_exp_conflict[label],
              ret_exp.score_conflict[label],
@@ -277,7 +278,7 @@ class TabularExplainer:
                     yss,
                     distances,
                     label,
-                    num_features,
+                    scaled_data.shape[1],
                     model_regressor=model_regressor,
                     feature_selection=self.feature_selection)
 

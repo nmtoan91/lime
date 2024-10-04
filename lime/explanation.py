@@ -203,11 +203,14 @@ class Explanation(object):
             conflicts = [i[1] for i in self.local_exp_conflict[label]]
             conflicts_real_index = [i[0] for i in self.local_exp_conflict[label]]
             for i in range(len(bars)):
-                bar = bars[my_bars_indexes[conflicts_real_index[i]]]
-                conflict_val = conflicts[i]
-                plt.text(0.01, bar.get_y() + bar.get_height()/2, f'cf cof: {abs(conflict_val):.2f}', va='center', ha='right', color='black',
+                #bar = bars[my_bars_indexes[conflicts_real_index[i]]]
+                bar = bars[i]
+
+                conflict_val = conflicts[conflicts_real_index[i]]
+                plt.text(0.01, bar.get_y() + bar.get_height()/2, f'cf={abs(conflict_val):.2f}', va='center', ha='center', color='black',
                          #bbox=dict(facecolor='darkgreen' if conflict_val>=0 else "grey", edgecolor='none', boxstyle='round,pad=0.3'))
-                         bbox=dict(facecolor="lightgreen", edgecolor='none', boxstyle='round,pad=0.3'))
+                         bbox=dict(facecolor="lightgreen", edgecolor='none', boxstyle='round,pad=0.01',alpha=0.5)
+                         )
         asd=123
         plt.tight_layout()
         return fig
