@@ -34,8 +34,8 @@ if __name__ == '__main__':
     parser.add_argument("-l", "--label",type=int,  default=None, help='index')
     parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
     parser.add_argument("-a", "--alpha",type=float,  default=0.1, help='alpha')
-    #parser.add_argument("-e", "--explainer",type=str,  default='dst-lime', help='alpha')
-    parser.add_argument("-e", "--explainer",type=str,  default='lime', help='alpha')
+    parser.add_argument("-e", "--explainer",type=str,  default='dst-lime', help='alpha')
+    #parser.add_argument("-e", "--explainer",type=str,  default='lime', help='alpha')
     parser.add_argument("-nf", "--num_features",type=int,  default=10, help='num_features')
 
 
@@ -99,7 +99,10 @@ if __name__ == '__main__':
     outputName = f"{args.explainer}_{args.method}_{args.data}_i{args.index}_l{args.label}_a{args.alpha}"
 
     fig.savefig(dirname+"/Figures/" + outputName + ".pdf")
-    results = ExtractExplnationData(exp)
+    results = ExtractExplnationData(exp,args.label)
+    with open(dirname+"/Results/" + outputName + ".json", "w") as file:
+        json.dump(results, file, indent=4)
+
     plt.show()
     #input()
     #asd=123

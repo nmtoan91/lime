@@ -10,6 +10,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier,
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neural_network import MLPClassifier
 from sklearn.datasets import fetch_covtype
+import numpy as np
 
 def LoadDataSet(datasetName):
     if datasetName == 'iris':
@@ -34,12 +35,41 @@ def SelectClassifier(classifierName):
         return DecisionTreeClassifier()
     print('Cannot find any dataset with name', classifierName)
 
-def ExtractExplnationData(exp):
+
+# def convert_to_serializable(data):
+#     if isinstance(data, dict):
+#         return {convert_to_serializable(key): convert_to_serializable(value) for key, value in data.items()}
+#     elif isinstance(data, list):
+#         return [convert_to_serializable(item) for item in data]
+#     elif isinstance(data, (np.int64, np.int32, np.int_, np.integer)):
+#         return int(data)
+#     elif isinstance(data, (np.float64, np.float32, np.float_, np.floating)):
+#         return float(data)
+#     else:
+#         return data
+    
+
+def ExtractExplnationData(exp,label):
+    label = int(label)
     data={}
-    data['score'] = exp.score
-    data['local_exp'] = exp.local_exp
-    data['local_exp_conflict'] = exp.local_exp_conflict
-    data['predict_proba'] = exp.predict_proba
-
-
+    data['label'] = label
+    data['score'] = float(exp.score[label])
+    #data['local_exp'] = exp.local_exp[label]
+    #data['local_exp_conflict'] = exp.local_exp_conflict
+    data['predict_proba'] = [float(i) for i in exp.predict_proba]
+    r = []
+    for (fid,val) in exp.local_exp[label]:
+        rdata = {'fid':int(fid), 'cof': float(val)}
+        
+        if label in exp.local_exp_conflict:
+            for (fid2,val2) in exp.local_exp_conflict[label]:
+                if fid2!= fid: continue
+                rdata['conflict'] = float(val2)
+                break
+        r.append(rdata)
+    data['result'] = r
     return data
+        
+        
+
+    #return convert_to_serializable(data)
