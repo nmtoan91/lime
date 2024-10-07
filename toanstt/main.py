@@ -27,9 +27,8 @@ basename =os.path.basename(__file__)
 asd=123
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
-    #parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
-    
+    #parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
+    parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
     parser.add_argument("-i", "--index",type=int,  default=3, help='index')
     parser.add_argument("-l", "--label",type=int,  default=None, help='index')
     parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
@@ -96,7 +95,7 @@ if __name__ == '__main__':
 
     fig = exp.as_pyplot_figure(label=args.label)
 
-    outputName = f"{args.explainer}_{args.method}_{args.data}_i{args.index}_l{args.label}_a{args.alpha}"
+    outputName = f"{args.method}_{args.data}_i{args.index}_l{args.label}_a{args.alpha}_{args.explainer}"
 
     fig.savefig(dirname+"/Figures/" + outputName + ".pdf")
     results = ExtractExplnationData(exp,args.label)
@@ -104,6 +103,4 @@ if __name__ == '__main__':
         json.dump(results, file, indent=4)
 
     plt.show()
-    #input()
-    #asd=123
 

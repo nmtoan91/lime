@@ -205,12 +205,16 @@ class Explanation(object):
             conflicts_byId = {}
             for (fid,conflict_value) in self.local_exp_conflict[label]:
                 conflicts_byId[fid] = conflict_value
+            x_min = np.min(vals)
+            x_max = np.max(vals)
             for i in range(len(bars)):
                 bar = bars[i]
                 fid = my_bars_indexes[i]
 
                 conflict_val = conflicts_byId[fid]
-                plt.text(0.01, bar.get_y() + bar.get_height()/2, f'cf={abs(conflict_val):.2f}', va='center', ha='center', color='black',
+
+
+                plt.text( (x_min+x_max)/2, bar.get_y() + bar.get_height()/2, f'cf={abs(conflict_val):.2f}', va='center', ha='center', color='black',
                          #bbox=dict(facecolor='darkgreen' if conflict_val>=0 else "grey", edgecolor='none', boxstyle='round,pad=0.3'))
                          bbox=dict(facecolor="lightgreen", edgecolor='none', boxstyle='round,pad=0.01',alpha=0.5)
                          )
