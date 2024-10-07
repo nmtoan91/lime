@@ -71,5 +71,15 @@ def ExtractExplnationData(exp,label):
     return data
         
         
+def CheckArgs(args):
+    if not hasattr(args,'data'): args.data = 'iris'
+    if not hasattr(args,'index'): args.index = 0
+    if not hasattr(args,'label'): args.label = None
+    if not hasattr(args,'method'): args.method = 'KNeighborsClassifier'
+    if not hasattr(args,'alpha'): args.alpha = 0.1
+    if not hasattr(args,'explainer'): args.explainer = 'dst-lime'
+    if not hasattr(args,'num_features'): args.num_features = 10
+
+    asd=123
 
     #return convert_to_serializable(data)

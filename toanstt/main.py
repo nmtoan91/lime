@@ -20,25 +20,13 @@ import lime
 import lime.lime_tabular
 import json
 
-from MTools import LoadDataSet, SelectClassifier,ExtractExplnationData
+from MTools import LoadDataSet, SelectClassifier,ExtractExplnationData,CheckArgs
 
 dirname = os.path.dirname(__file__)
 basename =os.path.basename(__file__)
-asd=123
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    #parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
-    parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
-    parser.add_argument("-i", "--index",type=int,  default=3, help='index')
-    parser.add_argument("-l", "--label",type=int,  default=None, help='index')
-    parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
-    parser.add_argument("-a", "--alpha",type=float,  default=0.1, help='alpha')
-    parser.add_argument("-e", "--explainer",type=str,  default='dst-lime', help='alpha')
-    #parser.add_argument("-e", "--explainer",type=str,  default='lime', help='alpha')
-    parser.add_argument("-nf", "--num_features",type=int,  default=10, help='num_features')
 
-
-    args = parser.parse_args()
+def ExecuteExplain(args):
+    CheckArgs(args)
 
     data = LoadDataSet(args.data)
     X = data.data
@@ -104,3 +92,17 @@ if __name__ == '__main__':
 
     plt.show()
 
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    #parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
+    parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
+    parser.add_argument("-i", "--index",type=int,  default=3, help='index')
+    parser.add_argument("-l", "--label",type=int,  default=None, help='index')
+    parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
+    parser.add_argument("-a", "--alpha",type=float,  default=0.1, help='alpha')
+    parser.add_argument("-e", "--explainer",type=str,  default='dst-lime', help='alpha')
+    #parser.add_argument("-e", "--explainer",type=str,  default='lime', help='alpha')
+    parser.add_argument("-nf", "--num_features",type=int,  default=10, help='num_features')
+    args = parser.parse_args()
+    ExecuteExplain(args)
