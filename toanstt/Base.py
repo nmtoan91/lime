@@ -364,7 +364,7 @@ if __name__ == '__main__':
     # K = a.ERGetConflictDegree_Diff(input[0],input[4],1)
     # print(K)
 
-    K = a.ERGetConflictDegree_Diff([0.5,0.25,0],[0.5,0.25,0.25])
+    K = a.ERGetConflictDegree_Diff([0.5,0.25,0.25],[0.5,0.25,0.25])
     print(K)
 
     K = a.ERGetConflictDegree_Diff([0.5,0.5,0],[0.5,0,0.5])

@@ -90,7 +90,7 @@ def ExecuteExplain(args):
     with open(dirname+"/Results/" + outputName + ".json", "w") as file:
         json.dump(results, file, indent=4)
 
-    plt.show()
+    #plt.show()
 
 
 if __name__ == '__main__':
@@ -106,3 +106,6 @@ if __name__ == '__main__':
     parser.add_argument("-nf", "--num_features",type=int,  default=10, help='num_features')
     args = parser.parse_args()
     ExecuteExplain(args)
+
+
+
