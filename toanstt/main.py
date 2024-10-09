@@ -89,8 +89,9 @@ def ExecuteExplain(args):
     results = ExtractExplnationData(exp,args.label)
     with open(dirname+"/Results/" + outputName + ".json", "w") as file:
         json.dump(results, file, indent=4)
-
+    
     #plt.show()
+    return exp,fig 
 
 
 if __name__ == '__main__':

@@ -265,7 +265,7 @@ class Base(object):
 
         asd=123
         my_row = neighborhood_labels[0]
-        for i in range(len(neighborhood_labels)):
+        for i in range(1,len(neighborhood_labels)):
             neighborhood_labels[i,label] = self.ERGetWeightedConflictDegree_Diff(my_row,neighborhood_labels[i],label,alpha  )
 
         #EndApplying conflict analysis
@@ -339,7 +339,21 @@ class Base(object):
         return (KAll-K)/KAll
     
     def ERGetWeightedConflictDegree_Diff(self,input1,input2,label=0,alpha=0.1):
-        return abs(input1[label] - input2[label])*(1-alpha) + (alpha)* self.ERGetConflictDegree_Diff(input1,input2,label)
+        conflict = self.ERGetConflictDegree_Diff(input1,input2,label)
+        if conflict < 0 : conflict=0
+        direction = 1
+        if input2[label]< input1[label]: direction=-1
+
+        return input1[label] + (input2[label] - input1[label] )*(1-alpha) - direction*(alpha)* conflict
+    
+        #return input2[label] + abs(input2[label] - input1[label] )*direction*(alpha) + direction*(alpha)* conflict
+    
+        #return input2[label] + abs(input2[label] - input1[label] )*direction*(1-alpha) + direction*(alpha)* conflict
+        #if input2[label] >input1[label]:
+        #return abs(input2[label] - input1[label] )*(1-alpha) + (alpha)* conflict
+        
+        #return abs(input2[label] - input1[label] )*(1-alpha) + (alpha)* conflict
+        #return abs(input2[label] - input1[label] )*(alpha) + (1-alpha)* conflict
     
 
 if __name__ == '__main__':
