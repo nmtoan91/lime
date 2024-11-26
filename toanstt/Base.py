@@ -262,10 +262,9 @@ class Base(object):
         weights = self.kernel_fn(distances)
 
         #Applying conflict analysis
-
-        asd=123
+        
         my_row = neighborhood_labels[0]
-        for i in range(1,len(neighborhood_labels)):
+        for i in range(1,len(neighborhood_labels)): # change labelf for each datapoint based on the their conflict degree
             neighborhood_labels[i,label] = self.ERGetWeightedConflictDegree_Diff(my_row,neighborhood_labels[i],label,alpha  )
 
         #EndApplying conflict analysis
@@ -346,14 +345,7 @@ class Base(object):
 
         return input1[label] + (input2[label] - input1[label] )*(1-alpha) - direction*(alpha)* conflict
     
-        #return input2[label] + abs(input2[label] - input1[label] )*direction*(alpha) + direction*(alpha)* conflict
-    
-        #return input2[label] + abs(input2[label] - input1[label] )*direction*(1-alpha) + direction*(alpha)* conflict
-        #if input2[label] >input1[label]:
-        #return abs(input2[label] - input1[label] )*(1-alpha) + (alpha)* conflict
-        
-        #return abs(input2[label] - input1[label] )*(1-alpha) + (alpha)* conflict
-        #return abs(input2[label] - input1[label] )*(alpha) + (1-alpha)* conflict
+   
     
 
 if __name__ == '__main__':
