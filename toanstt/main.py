@@ -146,7 +146,7 @@ def Analyze(args):
             data[i,l,6] =  exp.score_conflict[l]
             pass
     pass
-    np.save('toanstt/data/data.npy', data)
+    np.save(f'toanstt/data/data_{args.data}.npy', data)
 
    
 
@@ -154,7 +154,9 @@ def Analyze(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     #parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
-    parser.add_argument("-d", "--data",type=str,  default='breast_cancer', help='data')
+    parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
+    
+    #parser.add_argument("-d", "--data",type=str,  default='breast_cancer', help='data')
     parser.add_argument("-i", "--index",type=int,  default=3, help='index')
     parser.add_argument("-l", "--label",type=int,  default=None, help='index')
     parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
