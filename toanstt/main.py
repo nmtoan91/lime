@@ -122,10 +122,7 @@ def Analyze(args):
     classifier.fit(X_train, y_train)
 
     y_predict = classifier.predict(X_test)
-    accuracy = accuracy_score(y_predict, y_test)
     accuracy_list = list(y_predict == y_test)
-    correct_indices = np.where(y_predict == y_test)[0]
-    wrong_indices = np.where(y_predict != y_test)[0]
         
     
     y_test = y_test.to_numpy()
