@@ -28,9 +28,9 @@ with pd.ExcelWriter('toanstt/analyzing/data/data.xlsx') as writer:
 
 for l in range(n_class):
     d = data[:,l,:]
-    y = d[2]
+    y = d[:,2]
     for input_attribute in input_attributes:
-        x = d[input_attribute]
+        x = d[:,input_attribute]
         pearson_corr, pearson_pvalue = stats.pearsonr(x, y)
         spearman_corr, spearman_pvalue = stats.spearmanr(x, y)
         mse = mean_squared_error(x, y)
