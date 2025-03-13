@@ -9,7 +9,11 @@ import pandas as pd
 # 4: intercept_conflict
 # 5: local_pred_conflict
 # 6: score_conflict
-data = np.load('toanstt/data/data.npy')
+#data = np.load('toanstt/data/data.npy')
+#data_name = 'iris'
+data_name = 'covtype'
+data = np.load(f'toanstt/data/data_{data_name}.npy')
+
 column_names = ['groundtruth_label','predict label','is_correct', 'explaining_label','intercept_conflict','local_pred_conflict','score_conflict']
 
 
@@ -22,7 +26,7 @@ for l in range(n_class):
     dfs.append(pd.DataFrame(d, columns=column_names))
 
 sheet_names = [str(i) for i in range(n_class)]
-with pd.ExcelWriter('toanstt/analyzing/data/data.xlsx') as writer:
+with pd.ExcelWriter(f'toanstt/analyzing/data/data_{data_name}.xlsx') as writer:
     for df, sheet in zip(dfs, sheet_names):
         df.to_excel(writer, sheet_name=sheet, index=False)
 
@@ -61,7 +65,7 @@ for l in range(n_class):
 pass
 column_names = ['explaining_class','variable','pearson_corr','pearson_pvalue','spearman_corr','spearman_pvalue','mse','rmse','mae']
 df2 = pd.DataFrame(data_new, columns=column_names)
-df2.to_csv('toanstt/analyzing/data/output.csv',index=False) 
+df2.to_csv(f'toanstt/analyzing/data/output_{data_name}.csv',index=False) 
 pass
 
 

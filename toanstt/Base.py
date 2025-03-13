@@ -316,7 +316,7 @@ class Base(object):
         mnI = input1
         mnI_tmp = input2
         K = 0
-        K=0
+        K = 0
         for j in range(num_N):
             if j != label: continue
             K+= mnI[label]*mnI_tmp[j]

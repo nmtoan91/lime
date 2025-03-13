@@ -126,6 +126,9 @@ def Analyze(args):
         
     
     y_test = y_test.to_numpy()
+    if len(y_test) > 200:
+        y_test= y_test[0:200]
+        X_test = X_test[0:200]
     n_class = len(np.unique(y_train))
     data = np.zeros((len(X_test),n_class,3 +  3 +1))
     explainer = TabularExplainer(np.array(X_train),feature_names,class_names=feature_names,mode='classification',training_labels=None)
@@ -153,13 +156,15 @@ def Analyze(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    #parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
-    parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
+    parser.add_argument("-d", "--data",type=str,  default='covtype', help='data')
+    #parser.add_argument("-d", "--data",type=str,  default='iris', help='data')
     
     #parser.add_argument("-d", "--data",type=str,  default='breast_cancer', help='data')
     parser.add_argument("-i", "--index",type=int,  default=3, help='index')
     parser.add_argument("-l", "--label",type=int,  default=None, help='index')
     parser.add_argument("-m", "--method",type=str,  default='KNeighborsClassifier', help='method')
+    #parser.add_argument("-m", "--method",type=str,  default='DecisionTreeClassifier', help='method')
+    
     parser.add_argument("-a", "--alpha",type=float,  default=0.1, help='alpha')
     parser.add_argument("-e", "--explainer",type=str,  default='dst-lime', help='alpha')
     #parser.add_argument("-e", "--explainer",type=str,  default='lime', help='alpha')
