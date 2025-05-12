@@ -1,1 +1,0 @@
-exec(open("toanstt/main.py").read())
